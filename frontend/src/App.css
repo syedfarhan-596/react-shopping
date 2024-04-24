@@ -1,0 +1,14 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.shopping-card {
+  justify-content: space-between;
+  background-color: #2fa8a2;
+  padding: 20px 30px;
+}
+
+.product-item {
+  padding: 20px;
+}
