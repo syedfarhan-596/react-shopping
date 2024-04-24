@@ -32,6 +32,7 @@ const userRegister = async (req, res) => {
         .status(201)
         .json({ success: false, message: "User already exist try to login" });
     }
+
     const hashPass = await bcrypt.hash(password, 10);
     const user = await userModel.create({
       name,
@@ -74,7 +75,11 @@ const userLogin = async (req, res) => {
         message: "Incorrect password or email",
       });
     }
-    const token = await jsonwebtoken.sign(user.email, "JSON_SECRET_KEY");
+    const token = await jsonwebtoken.sign(
+      { email: user.email },
+      "JSON_SECRET_KEY"
+    );
+
     return res.status(200).json({
       success: true,
       message: "User registration done successfully",
@@ -100,4 +105,16 @@ const checkUser = async (req, res) => {
   return res.json({ success: true, message: "User exist" });
 };
 
-module.exports = { userLogin, userRegister, checkUser };
+const GetUser = async (req, res) => {
+  try {
+    const user = await userModel.findOne({ email: req.user.email });
+    if (!user) {
+      res.status(498).json({ success: false, message: "Invalid token" });
+    }
+    res.status(200).json({ success: true, user });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error });
+  }
+};
+
+module.exports = { userLogin, userRegister, checkUser, GetUser };
